@@ -1,8 +1,15 @@
-import { User } from "../../modals/index.js";
+import { Address, User } from "../../modals/index.js";
 
 export const addUserService=async(data)=>{
+    let result;
     try {
-        const result=await User.create(data);
+        if(data.length > 1){
+            result=await User.bulkCreate(data);
+        }
+        else{
+            result=await User.create(data);
+        }
+        
         return {statusCode:201,result}
     } catch (error) {
         return {statusCode:400,message:error.message}
@@ -10,7 +17,9 @@ export const addUserService=async(data)=>{
 }
 export const getUserService=async()=>{
     try {
-        const result=await User.findAll();
+        const result=await User.findAll({
+            include:Address
+        });
         return {statusCode:201,result}
     } catch (error) {
         return {statusCode:400,message:error.message}
