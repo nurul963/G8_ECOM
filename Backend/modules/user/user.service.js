@@ -3,6 +3,7 @@ import { Address, User } from "../../modals/index.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { SECERATE_KEY } from "../../util/constant.js";
+import { sendMail } from "../../util/common.js";
 export const addUserService=async(data)=>{
     let result;
     try {
@@ -10,7 +11,18 @@ export const addUserService=async(data)=>{
             result=await User.bulkCreate(data);
         }
         else{
-            result=await User.create(data);
+            if(data.role==="SELLER"){
+                const info=await sendMail(data.email,data.name);
+                console.log(info.messageId);
+                result=await User.create(data);
+                return {
+                    statusCode:201,
+                    message:"Your account is created and pending for activation, Please contact to Admin"
+                }
+            }else{
+                data.isActive=1;
+                result=await User.create(data);
+            } 
         }
         
         return {statusCode:201,result}
@@ -52,7 +64,7 @@ export const deleteUserService=async(id)=>{
         return {statusCode:400,message:error.message}
     }
 }
-export const loginUserService=async(data)=>{
+export const loginUserService=async(data,resp)=>{
     const {email,password}=data;
     if(!email || !password){
         return {
@@ -71,6 +83,12 @@ export const loginUserService=async(data)=>{
             message:"User not registered"
         }
     }
+    if(!user.isActive){
+        return {
+            statusCode:400,
+            message:"You have been blocked please contact to Admin"
+        }
+    }
     const isMatch=await bcrypt.compare(password,user.password);
     if(!isMatch){
         return {
@@ -81,9 +99,14 @@ export const loginUserService=async(data)=>{
     const id=user.id.toString();
     const role=user.role;
     const token=jwt.sign({id,role,email},SECERATE_KEY,{expiresIn:'1hr'});
+    resp.cookie('token',token,{
+            httpOnly:true,
+            secure:false,
+            samesite:'strict',
+            maxAge:60*60*1000
+    })
     return {
         statusCode:200,
         result:user,
-        token
     }
 }

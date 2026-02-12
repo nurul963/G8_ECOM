@@ -27,25 +27,30 @@ export const deleteUser=async(req,resp)=>{
     })
 }
 export const loginUser=async(req,resp)=>{
-    const result=await loginUserService(req.body);
-    if(result && result.result && result.result.token){
-        resp.cookie('token',token,{
-            httpOnly:true,
-            secure:false,
-            samesite:'strict',
-            maxAge:60*60*1000
+    const result=await loginUserService(req.body,resp);
+    // if(result && result.token){
+    //     resp.cookie('token',token,{
+    //         httpOnly:true,
+    //         secure:false,
+    //         samesite:'strict',
+    //         maxAge:60*60*1000
+    //     })
+    // }
+    if(result && result.result){
+        const id=result.result.id;
+        const name=result.result.name;
+        const email=result.result.email;
+        return resp.status(result.statusCode).json({
+            id,name,email,
+            message:"Login Success"
         })
     }
-    const id=result.result.id;
-    const name=result.result.name;
-    const email=result.result.email;
     return resp.status(result.statusCode).json({
-        id,name,email,
-        message:"Login Success"
+        result
     })
 }
 export const logoutUser=async(req,resp)=>{
-    resp.clearCookie();
+    resp.clearCookie('token');
     return resp.status(200).json({
         statusCode:200,
         message:"Logout Successfully"

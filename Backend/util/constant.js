@@ -7,3 +7,5 @@ export const DB_PASSWORD=process.env.DB_PASSWORD;
 export const HOST=process.env.HOST;
 export const DILECT=process.env.DILECT;
 export const SECERATE_KEY=process.env.SECERATE_KEY;
+export const GMAIL_APP_PASS=process.env.GMAIL_APP_PASS;
+export const GMAIL=process.env.GMAIL;
