@@ -1,9 +1,9 @@
 import { where } from "sequelize";
 import { Cart, Category, Product, ProductImage, User } from "../../modals/index.js";
 
-const addToCart=async(data)=>{
+const addToCart=async(userId,data)=>{
     try {
-        const {userId,quantity,productId}=data;
+        const {quantity,productId}=data;
         const product=await Product.findOne({where:{id:productId}})
         if(!product){
             return {

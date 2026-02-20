@@ -12,3 +12,6 @@ export const GMAIL=process.env.GMAIL;
 export const CLOUDINARY_NAME=process.env.CLOUDINARY_NAME;
 export const CLOUDINARY_API_KEY=process.env.CLOUDINARY_API_KEY;
 export const CLOUDINARY_API_SECRET=process.env.CLOUDINARY_API_SECRET;
+export const PG_CLIENT_ID=process.env.PG_CLIENT_ID;
+export const PG_CLIENT_SECRET=process.env.PG_CLIENT_SECRET;
+export const API_URL=`${process.env.API_URL}/${PORT}/api`
