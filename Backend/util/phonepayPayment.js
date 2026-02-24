@@ -10,8 +10,13 @@ export const PgInitiatePayment=async(orderId,userId,amount,merchantOrderId)=>{
         .merchantOrderId(merchantOrderId)
         .amount(amount)
         .metaInfo(metaInfo)
-        .redirectUrl(API_URL)
+        .redirectUrl(`${API_URL}/payment/verify?merchantOrderId=${merchantOrderId}`)
         .build();
     const response=await client.pay(orderRequest);
+    return response;
+}
+export const checkPaymentStauts=async(merchantOrderId)=>{
+    const response=await client.getOrderStatus(merchantOrderId);
+
     return response;
 }

@@ -6,4 +6,13 @@ const checkout=async(req,resp)=>{
     const result=await paymentService.checkout(userId,orderId);
     return resp.status(result.statusCode).json(result);
 }
-export const paymentController={checkout};
+
+const checkPhonePayPaymentStatus=async(req,resp)=>{
+    const merchantOrderId=req.query.merchantOrderId;
+    const result=await paymentService.checkPhonePayPaymentStatus(merchantOrderId);
+    return resp.status(result.statusCode).json(result);
+}
+export const paymentController={
+    checkout,
+    checkPhonePayPaymentStatus
+};
